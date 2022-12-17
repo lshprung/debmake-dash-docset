@@ -53,7 +53,11 @@ endif
 	cp -r $(MANUAL_SOURCE)/images $@
 
 $(INFO_PLIST_FILE): src/Info.plist $(CONTENTS_DIR)
-	cp src/Info.plist $@
+	head -n -2 src/Info.plist > $@
+	echo "	<key>dashIndexFilePath</key>" >> $@
+	echo "	<string>index.$(LOCALE).html</string>" >> $@
+	echo "</dict>" >> $@
+	echo "</plist>" >> $@
 
 $(INDEX_FILE): src/index.sh $(DOCUMENTS_DIR)
 	rm -f $@
