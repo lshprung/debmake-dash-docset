@@ -1,11 +1,7 @@
-Here is a script and a Makefile for generating a GNU Automake docset for Dash. The script is loosely based on benzado's script for GNU Make https://github.com/benzado/gnu-make-dash-docset.
+Here is a script and a Makefile for generating a debmake docset for Dash. It is built from documentation provided by the [debmake-doc](https://salsa.debian.org/debian/debmake-doc) package and provides guides useful for the creation of deb packages. The script is loosely based on benzado's script for GNU Make https://github.com/benzado/gnu-make-dash-docset.
 
-- GNU Automake: https://www.gnu.org/software/automake/
+- debmake: https://salsa.debian.org/debian/debmake
 - Dash: https://kapeli.com/dash
-
-To generate a docset from the latest edition of the GNU Automake Manual, simply
-execute `make` from the same directory as this README file. The latest edition
-will be downloaded from www.gnu.org and packaged appropriately.
 
 Requirements:
 
@@ -13,3 +9,14 @@ Requirements:
 - curl
 - make
 - sqlite3
+
+In addition, this script is designed to be run on a Debian or Debian-based system where the debmake-doc package can be installed, as the script will check to make sure it can source the docset's html pages from /usr/share/doc/debmake-doc/html
+
+To generate a docset from the the debmake-doc package, simply execute `make` from the same directory as this README file. The version installed on the system will be packaged appropriately. The default locale is English (en). Alternative locales can be specified by executing `make LOCALE=$(locale)` (where $(locale) is the short form, i.e. "en"). The list of supported locales is listed below:
+
+- German           (de)
+- English          (en)
+- Japanese         (jp)
+- Russian          (ru)
+- Chinese (China)  (zh-cn)
+- Chinese (Taiwan) (zh-tw)

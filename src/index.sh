@@ -6,7 +6,7 @@ shift
 get_title() {
 	FILE="$1"
 
-	PATTERN="<title>.*\(automake\).*</title>"
+	PATTERN="<title>.*</title>"
 
 	#Find pattern in file
 	grep -Eo "$PATTERN" "$FILE" | 

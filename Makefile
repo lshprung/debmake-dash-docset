@@ -1,4 +1,9 @@
-DOCSET_NAME = GNU_Automake
+DOCSET_NAME = debmake
+PACKAGE_NAME = debmake-doc
+
+ifndef $(LOCALE)
+	LOCALE=en
+endif
 
 DOCSET_DIR    = $(DOCSET_NAME).docset
 CONTENTS_DIR  = $(DOCSET_DIR)/Contents
@@ -10,8 +15,7 @@ INDEX_FILE      = $(RESOURCES_DIR)/docSet.dsidx
 ICON_FILE       = $(DOCSET_DIR)/icon.png
 ARCHIVE_FILE    = $(DOCSET_NAME).tgz
 
-MANUAL_URL  = https://www.gnu.org/software/automake/manual/automake.html_node.tar.gz
-MANUAL_FILE = tmp/automake.html_node.tar.gz
+MANUAL_SOURCE = /usr/share/doc/$(PACKAGE_NAME)/html
 
 DOCSET = $(INFO_PLIST_FILE) $(INDEX_FILE) $(ICON_FILE)
 
@@ -29,7 +33,6 @@ $(ARCHIVE_FILE): $(DOCSET)
 	tar --exclude='.DS_Store' -czf $@ $(DOCSET_DIR)
 
 $(MANUAL_FILE): tmp
-	curl -o $@ $(MANUAL_URL)
 
 $(DOCSET_DIR):
 	mkdir -p $@
@@ -41,8 +44,13 @@ $(RESOURCES_DIR): $(CONTENTS_DIR)
 	mkdir -p $@
 
 $(DOCUMENTS_DIR): $(RESOURCES_DIR) $(MANUAL_FILE)
+ifeq (,$(wildcard $(MANUAL_SOURCE)))
+	$(error Missing debmake-doc package)
+endif
 	mkdir -p $@
-	tar -x -z -f $(MANUAL_FILE) -C $@
+	cp -r $(MANUAL_SOURCE)/*.$(LOCALE).* $@
+	cp -r $(MANUAL_SOURCE)/*css $@
+	cp -r $(MANUAL_SOURCE)/images $@
 
 $(INFO_PLIST_FILE): src/Info.plist $(CONTENTS_DIR)
 	cp src/Info.plist $@
