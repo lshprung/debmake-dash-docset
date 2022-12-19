@@ -11,7 +11,7 @@ get_title() {
 	#Find pattern in file
 	grep -Eo "$PATTERN" "$FILE" | 
 		#Remove tag
-		sed 's/<[^>]*>//g' | \
+		sed 's/<[^>]*>//' | \
 		#Remove leading chapter
 		#sed 's/^[A-Z0-9]\.*[^ ]* //g' | \
 		#Remove trailing space
@@ -33,13 +33,16 @@ sqlite3 "$DB_PATH" "CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, 
 sqlite3 "$DB_PATH" "CREATE UNIQUE INDEX anchor ON searchIndex (name, type, path);"
 
 # Get titles and insert into table for each html file
-# TODO get page anchors working
 while [ -n "$1" ]; do
 	unset PAGE_NAME
 	PAGE_NAME="$(get_title "$1")"
 	echo "$PAGE_NAME" | while read -r line; do
 		if [ -n "$line" ]; then
-			insert "$line" "Guide" "$(basename "$1")"
+			unset TITLE
+			TITLE="$(echo "$line" | sed 's/<[^>]*>//g')"
+			unset LINK
+			LINK="$(basename "$1")#$(echo "$line" | sed 's/^.\{7\}//' | sed 's/\"\/>.*//')"
+			insert "$TITLE" "Guide" "$LINK"
 		fi
 	done
 	shift
