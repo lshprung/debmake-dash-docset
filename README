@@ -6,7 +6,6 @@ Here is a script and a Makefile for generating a debmake docset for Dash. It is 
 Requirements:
 
 - any POSIX-compliant shell
-- curl
 - make
 - sqlite3
 
