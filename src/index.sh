@@ -12,8 +12,6 @@ get_title() {
 	grep -Eo "$PATTERN" "$FILE" | 
 		#Remove tag
 		sed 's/<[^>]*>//' | \
-		#Remove leading chapter
-		#sed 's/^[A-Z0-9]\.*[^ ]* //g' | \
 		#Remove trailing space
 		sed 's/[ ]*$//g' | \
 		#Replace '&amp' with '&'
@@ -39,7 +37,7 @@ while [ -n "$1" ]; do
 	echo "$PAGE_NAME" | while read -r line; do
 		if [ -n "$line" ]; then
 			unset TITLE
-			TITLE="$(echo "$line" | sed 's/<[^>]*>//g')"
+			TITLE="$(echo "$line" | sed 's/<[^>]*>//g' | sed -E 's/^Chapter |Appendix //' | sed 's/^[A-Z0-9]\.[^ ]* //')"
 			unset LINK
 			LINK="$(basename "$1")#$(echo "$line" | sed 's/^.\{7\}//' | sed 's/\"\/>.*//')"
 			insert "$TITLE" "Guide" "$LINK"
