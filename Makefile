@@ -1,9 +1,6 @@
 DOCSET_NAME = debmake
 PACKAGE_NAME = debmake-doc
-
-ifndef $(LOCALE)
-	LOCALE=en
-endif
+LOCALE = en
 
 DOCSET_DIR    = $(DOCSET_NAME).docset
 CONTENTS_DIR  = $(DOCSET_DIR)/Contents
@@ -15,7 +12,11 @@ INDEX_FILE      = $(RESOURCES_DIR)/docSet.dsidx
 ICON_FILE       = $(DOCSET_DIR)/icon.png
 ARCHIVE_FILE    = $(DOCSET_NAME).tgz
 
-MANUAL_SOURCE = /usr/share/doc/$(PACKAGE_NAME)/html
+# TODO latest version should not have to be manually determined
+VERSION = 1.17
+MANUAL_URL = https://salsa.debian.org/debian/debmake-doc/-/archive/upstream/$(VERSION)/debmake-doc-upstream-$(VERSION).tar.gz
+MANUAL_SRC = tmp/$(PACKAGE_NAME)-upstream-$(VERSION)
+MANUAL_FILE = $(MANUAL_SRC)/basedir/html
 
 DOCSET = $(INFO_PLIST_FILE) $(INDEX_FILE) $(ICON_FILE)
 
@@ -25,6 +26,10 @@ archive: $(ARCHIVE_FILE)
 
 clean:
 	rm -rf $(DOCSET_DIR) $(ARCHIVE_FILE)
+ifneq (,$(wildcard $(MANUAL_SRC)))
+	cd $(MANUAL_SRC) && make clean
+endif
+	
 
 tmp:
 	mkdir -p $@
@@ -32,7 +37,12 @@ tmp:
 $(ARCHIVE_FILE): $(DOCSET)
 	tar --exclude='.DS_Store' -czf $@ $(DOCSET_DIR)
 
-$(MANUAL_FILE): tmp
+$(MANUAL_SRC): tmp
+	curl -o $@.tar.gz $(MANUAL_URL)
+	tar -x -z -f $@.tar.gz -C tmp
+
+$(MANUAL_FILE): $(MANUAL_SRC)
+	cd $(MANUAL_SRC) && make html css LANGALL=$(LOCALE)
 
 $(DOCSET_DIR):
 	mkdir -p $@
@@ -44,13 +54,8 @@ $(RESOURCES_DIR): $(CONTENTS_DIR)
 	mkdir -p $@
 
 $(DOCUMENTS_DIR): $(RESOURCES_DIR) $(MANUAL_FILE)
-ifeq (,$(wildcard $(MANUAL_SOURCE)))
-	$(error Missing debmake-doc package)
-endif
 	mkdir -p $@
-	cp -r $(MANUAL_SOURCE)/*.$(LOCALE).* $@
-	cp -r $(MANUAL_SOURCE)/*css $@
-	cp -r $(MANUAL_SOURCE)/images $@
+	cp -r $(MANUAL_FILE)/* $@
 
 $(INFO_PLIST_FILE): src/Info.plist $(CONTENTS_DIR)
 	head -n -2 src/Info.plist > $@

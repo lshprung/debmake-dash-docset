@@ -6,12 +6,12 @@ Here is a script and a Makefile for generating a debmake docset for Dash. It is 
 Requirements:
 
 - any POSIX-compliant shell
+- curl
 - make
+- po4a
 - sqlite3
 
-In addition, this script is designed to be run on a Debian or Debian-based system where the debmake-doc package can be installed, as the script will check to make sure it can source the docset's html pages from /usr/share/doc/debmake-doc/html
-
-To generate a docset from the the debmake-doc package, simply execute `make` from the same directory as this README file. The version installed on the system will be packaged appropriately. The default locale is English (en). Alternative locales can be specified by executing `make LOCALE=$(locale)` (where $(locale) is the short form, i.e. "en"). The list of supported locales is listed below:
+To generate a docset, simply execute `make` from the same directory as this README file. The version installed on the system will be packaged appropriately. The default locale is English (en). Alternative locales can be specified by executing `make LOCALE=$(locale)` (where $(locale) is the short form, i.e. "en"). The list of supported locales is listed below:
 
 - German           (de)
 - English          (en)
