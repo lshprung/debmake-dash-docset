@@ -5,7 +5,7 @@ SRC_INFO_PLIST_IN = $(SOURCE_DIR)/Info.plist.in
 SRC_ICON_FILE = $(SOURCE_DIR)/icon.png
 
 # TODO latest version should not have to be manually determined
-VERSION = 1.17
+VERSION = 1.20
 MANUAL_URL = https://salsa.debian.org/debian/debmake-doc/-/archive/upstream/$(VERSION)/debmake-doc-upstream-$(VERSION).tar.gz
 MANUAL_SRC = tmp/$(PACKAGE_NAME)-upstream-$(VERSION)
 MANUAL_FILE = $(MANUAL_SRC)/basedir/html
