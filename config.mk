@@ -29,6 +29,10 @@ $(SRC_INFO_PLIST_FILE): $(SRC_INFO_PLIST_IN) $(CONTENTS_DIR)
 	echo "</dict>" >> $@
 	echo "</plist>" >> $@
 
-$(INDEX_FILE): $(wildcard $(SOURCE_DIR)/src/*.sh) $(DOCUMENTS_DIR)
+#$(INDEX_FILE): $(wildcard $(SOURCE_DIR)/src/*.sh) $(DOCUMENTS_DIR)
+#	rm -f $@
+#	$(SOURCE_DIR)/src/index.sh $@ $(DOCUMENTS_DIR)/*.html
+
+$(INDEX_FILE): $(wildcard $(SOURCE_DIR)/src/*.py) $(DOCUMENTS_DIR)
 	rm -f $@
-	$(SOURCE_DIR)/src/index.sh $@ $(DOCUMENTS_DIR)/*.html
+	$(SOURCE_DIR)/src/index.py $@ $(DOCUMENTS_DIR)/*.html
