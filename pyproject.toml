@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools >= 61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "debmake_dash_docset_generator"
+version = "0.1"
+authors = [
+	{ name="Louie Shprung", email="lshprung@tutanota.com" }
+]
+description = "Dash docset generator for debmake"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+	"Operating System :: OS Independent",
+	"Programming Language :: Python :: 3"
+]
+dependencies = [
+	"beautifulsoup4",
+	"dash_docset_builder"
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+
+[project.scripts]
+debmake_dash_docset_generator = "debmake_dash_docset_generator.debmake_dash_docset_generator:main"
+
+[project.urls]
+Homepage = "https://github.com/lshprung/debmake-dash-docset"
+Issues = "https://github.com/lshprung/debmake-dash-docset/issues"

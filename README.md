@@ -1,5 +1,6 @@
-This docset is now built using [dash-docset-builder](https://github.com/lshprung/dash-docset-builder)
+Dash docset generator for [debmake](https://salsa.debian.org/debian/debmake)
 
+<!--
 ---
 
 Supported values for LOCALE:
@@ -10,3 +11,4 @@ Supported values for LOCALE:
 - `ru`    - Russian         
 - `zh-cn` - Chinese (China) 
 - `zh-tw` - Chinese (Taiwan)
+-->
