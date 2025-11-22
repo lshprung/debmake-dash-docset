@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools >= 61.0.0"]
+requires = ["setuptools >= 69.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -23,7 +23,7 @@ license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
 
 [project.scripts]
-debmake_dash_docset_generator = "debmake_dash_docset_generator.debmake_dash_docset_generator:main"
+debmake-dash-docset-generator = "debmake_dash_docset_generator.main:main"
 
 [project.urls]
 Homepage = "https://github.com/lshprung/debmake-dash-docset"
