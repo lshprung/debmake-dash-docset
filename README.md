@@ -1,4 +1,5 @@
-Dash docset generator for [debmake](https://salsa.debian.org/debian/debmake)
+Dash docset generator for 
+[debmake-doc](https://salsa.debian.org/debian/debmake-doc)
 
 <!--
 ---

@@ -6,29 +6,31 @@ from importlib import resources
 import logging
 import os
 from pathlib import Path
+import plistlib
 from pprint import pformat
 import re
 import shutil
+import typing
 
 from dash_docset_builder import (
-        build_docset_skeleton, 
+        DocsetSkeleton, 
         get_argparse_template, 
         create_table, 
         insert
 )
 
 class Index:
-    def __init__(self, db_path: str) -> None:
-        self.db_path: str = db_path
+    def __init__(self, db_path: Path) -> None:
+        self.db_path: Path = db_path
 
     # Find all relevant titles from a page
-    def get_title(self, html_path: str) -> list[Tag]:
+    def get_title(self, html_path: Path) -> list[Tag]:
         soup: BeautifulSoup = BeautifulSoup(open(html_path), 'html.parser')
         matches: list[Tag] = soup.find_all(class_="title")
         logging.debug("Got matches " + pformat(matches))
         return matches
 
-    def insert_page(self, html_path: str) -> None:
+    def insert_page(self, html_path: Path) -> None:
         page_names: list[Tag] = self.get_title(html_path)
         title: str
         for page_name in page_names:
@@ -45,17 +47,14 @@ class Index:
             title = re.sub(r'Table of Contents.*', r'', title)
             logging.debug("final title is '{}'".format(title))
 
-            link = os.path.basename(html_path) + "#" + str(page_name.a['id'])
+            link = html_path.name + "#" + str(page_name.a['id'])
             
             logging.debug("link is " + link)
 
             insert(self.db_path, title, "Guide", link)
 
-# TODO probably use argparse here
 def main() -> None:
     parser: argparse.ArgumentParser = get_argparse_template()
-    # add option to specify locale
-    # TODO
     _ = parser.add_argument("-l", "--locale",
                             choices=[
                                 "de", 
@@ -66,6 +65,7 @@ def main() -> None:
                                 "zh-cn", 
                                 "zh-tw"
                             ],
+                            default="en",
                             help="Specify locale to limit to")
     args: argparse.Namespace = parser.parse_args()
 
@@ -73,32 +73,49 @@ def main() -> None:
         print(f"Error: invalid MANUAL_SOURCE '{str(args.MANUAL_SOURCE)}'")
         exit(1)
 
-    docset_skeleton: dict[str, Path] | None = build_docset_skeleton(
+    docset_skeleton: DocsetSkeleton = DocsetSkeleton(
             "debmake", args.builddir
     )
-    if docset_skeleton is None:
-        exit(1)
+    # docset_skeleton will exit if it encounters issues, so no need to handle 
+    # it here
 
-    main: Index = Index(str(docset_skeleton["index_file"]))
+    main: Index = Index(docset_skeleton.index_file)
 
-    create_table(str(docset_skeleton["index_file"]))
+    create_table(docset_skeleton.index_file)
     
     # copy files from manual source to builddir
     _ = shutil.copytree(
             args.MANUAL_SOURCE, 
-            docset_skeleton["documents_dir"], 
+            docset_skeleton.documents_dir, 
             dirs_exist_ok=True
         )
-    
-    #for html_path in docset_skeleton["documents_dir"].rglob("*.html"):
-    #    main.insert_page(str(html_path))
 
-    # add plist and icon
+    # remove files not matching the specified locale
+    for f in docset_skeleton.documents_dir.iterdir():
+        if str(f).endswith(".html"):
+            if not str(f).endswith(f"{args.locale}.html"):
+                os.remove(f)
+    
+    for html_path in docset_skeleton.documents_dir.rglob("*.html"):
+        main.insert_page(html_path)
+
+    # generate plist
+    plist: dict[str, typing.Any] = {
+            "CFBundleIdentifier": "debmake",
+            "CFBundleName": "debmake",
+            "DocSetPlatformFamily": "debmake",
+            "isDashDocset": True,
+            "dashIndexFilePath": f"index.{args.locale}.html"
+    }
+    with open(docset_skeleton.info_plist_file, mode='wb') as f:
+        plistlib.dump(plist, f)
+
+    # add icon
     with resources.path(
             "debmake_dash_docset_generator", 
             Path("resources", "icon.png")
     ) as fspath:
-        _ = shutil.copy2(fspath, docset_skeleton["icon_file"])
+        _ = shutil.copy2(fspath, docset_skeleton.icon_file)
 
 if __name__ == '__main__':
     main()
