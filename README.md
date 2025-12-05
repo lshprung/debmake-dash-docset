@@ -8,10 +8,11 @@ Dash docset generator for
 
 - `debmake-dash-docset-generator MANUAL_SOURCE`
 
-`MANUAL_SOURCE` will be the path to the built upstream source, which should be
-something like `debmake-doc/basedir/html`
-
-- For a full set of options: `debmake-dash-docset-generator -h`
+    - If `pipx` is installed, you can avoid `pip install`ing anything and just
+    run `pipx run debmake-dash-docset-generator MANUAL_SOURCE`
+    - `MANUAL_SOURCE` will be the path to the built upstream source, which 
+    should be something like `debmake-doc/basedir/html`
+    - For a full set of options: `debmake-dash-docset-generator -h`
 
 <!--
 ---
