@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "debmake_dash_docset_generator"
-version = "0.1"
+version = "2025.12.05"
 authors = [
 	{ name="Louie Shprung", email="lshprung@tutanota.com" }
 ]
