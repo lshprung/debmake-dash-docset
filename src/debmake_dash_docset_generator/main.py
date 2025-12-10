@@ -13,15 +13,14 @@ import shutil
 import typing
 
 from dash_docset_builder import (
+        DB,
         DocsetSkeleton, 
         get_argparse_template, 
-        create_table, 
-        insert
 )
 
 class Index:
-    def __init__(self, db_path: Path) -> None:
-        self.db_path: Path = db_path
+    def __init__(self, db: DB) -> None:
+        self.db: DB = db
 
     # Find all relevant titles from a page
     def get_title(self, html_path: Path) -> list[Tag]:
@@ -51,7 +50,7 @@ class Index:
             
             logging.debug("link is " + link)
 
-            insert(self.db_path, title, "Guide", link)
+            self.db.insert(title, "Guide", link)
 
 def main() -> None:
     parser: argparse.ArgumentParser = get_argparse_template()
@@ -79,9 +78,8 @@ def main() -> None:
     # docset_skeleton will exit if it encounters issues, so no need to handle 
     # it here
 
-    main: Index = Index(docset_skeleton.index_file)
-
-    create_table(docset_skeleton.index_file)
+    db: DB = DB(docset_skeleton.index_file)
+    index: Index = Index(db)
     
     # copy files from manual source to builddir
     _ = shutil.copytree(
@@ -97,7 +95,7 @@ def main() -> None:
                 os.remove(f)
     
     for html_path in docset_skeleton.documents_dir.rglob("*.html"):
-        main.insert_page(html_path)
+        index.insert_page(html_path)
 
     # generate plist
     plist: dict[str, typing.Any] = {

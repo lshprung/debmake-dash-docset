@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "debmake_dash_docset_generator"
-version = "2025.12.05"
+version = "2025.12.09"
 authors = [
 	{ name="Louie Shprung", email="lshprung@tutanota.com" }
 ]
@@ -17,7 +17,7 @@ classifiers = [
 ]
 dependencies = [
 	"beautifulsoup4",
-	"dash_docset_builder"
+	"dash_docset_builder>=2025.12.09"
 ]
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
